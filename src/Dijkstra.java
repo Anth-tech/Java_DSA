@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Dijkstra {
+    private static final int INF = 0x3f3f3f3f;
     public static void main (String args[]) {
         int graph[][] = new int[][] {
             { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
@@ -14,6 +15,27 @@ public class Dijkstra {
             { 0, 0, 2, 0, 0, 0, 6, 7, 0 } 
         };
         int path[] = alShortestPath(graph, 0, graph.length);
+
+        int numV = 9;
+        List<List<Pair<Integer, Integer> > > adj = new ArrayList<>(numV);
+        for (int i = 0; i < numV; i++) {
+            adj.add(new ArrayList<>());
+        }
+        addEdge(adj, 0, 1, 4);
+        addEdge(adj, 0, 7, 8);
+        addEdge(adj, 1, 2, 8);
+        addEdge(adj, 1, 7, 11);
+        addEdge(adj, 2, 3, 7);
+        addEdge(adj, 2, 8, 2);
+        addEdge(adj, 2, 5, 4);
+        addEdge(adj, 3, 4, 9);
+        addEdge(adj, 3, 5, 14);
+        addEdge(adj, 4, 5, 10);
+        addEdge(adj, 5, 6, 2);
+        addEdge(adj, 6, 7, 1);
+        addEdge(adj, 6, 8, 6);
+        addEdge(adj, 7, 8, 7);
+        hShortestPath(adj, numV, 0);
     }
 
     private static int minDistance(int dist[], Boolean sptSet[], int v) {
@@ -113,42 +135,93 @@ public class Dijkstra {
         }
     }
 
-    private static void hShortestPath(List<List<Pair<Integer, Integer> > > adj, int v, int src) {
-        System.out.println("Shortest path using a heap");
-        // create a priority queue to store vertices that are being preprocessed
-        PriorityQueue<Pair<Integer, Integer> > pq = new PriorityQueue<>(Comparator.comparingInt(Pair::getFirst));
+    private static void addEdge(List<List<Pair<Integer, Integer> > > adj, int u, int v, int wt) {
+        adj.get(u).add(new Pair<>(v, wt));
+        adj.get(v).add(new Pair<>(u, wt));
+    }
 
+    private static void hShortestPath(List<List<Pair<Integer, Integer> > > adj, int v, int src) {
+        System.out.println("\nShortest path using a heap");
+        
+        // create a priority queue to store vertices that are being preprocessed
+        System.out.println("Creating a priorty queue to store preprocessed vertices");
+        PriorityQueue<Pair<Integer, Integer> > pq = new PriorityQueue<>(Comparator.comparingInt(Pair::getFirst));
+        
         // create a list for distances and initialize all distances as infinite (INF)
+        System.out.println("Creating a list for distances and init");
         List<Integer> dist = new ArrayList<>(Collections.nCopies(v, INF));
+        System.out.println("Vertex \t\t Distance from Source");
+        for (Integer vertex : dist) {
+            System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
+        }
 
         // insert source itself in priority queue and init its distance to 0
+        System.out.println("\nPut src into priority queue and set dist src to 0");
         pq.add(new Pair<>(0, src));
         dist.set(src, 0);
+        System.out.println("Priority queue: [ (" + pq.peek().getFirst() + ", " + pq.peek().getSecond() + ") ]");
+        System.out.println("Vertex \t\t Distance from Source");
+        for (Integer vertex : dist) {
+            if (vertex == INF) {
+                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
+            } else {
+                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t " + vertex);
+            }
+        }
 
         // looping till priority queue becomes empty (or all distances are not finalized)
+        System.out.println("\nLoop over priority queue until it is empty");
         while (!pq.isEmpty()) {
             // the first vertex in pair is the min distance vertex
             // extract it from priority queue
             int u = pq.peek().getSecond();
             pq.poll();
+            System.out.println("\tv" + u + " is min distance vertex, popping");
 
             // get all adjacent of u
+            System.out.println("\tFind all adjacent vertices of v" + u);
             for (Pair<Integer, Integer> x : adj.get(u)) {
                 // get vertex label and weight of current adjacent of u
                 int ver = x.getFirst();
                 int weight = x.getSecond();
 
                 // if there is a shorter path to v through u
-                if (dist.get(v) > dist.get(u) + weight) {
+                if (dist.get(ver) > dist.get(u) + weight) {
                     // updating distance of v
-                    dist.set(v, dist.get(u) + weight);
-                    pq.add(new Pair<>(dist.get(v), v));
+                    System.out.println("\t\tdistance of v" + ver + ": " + dist.get(ver) + " > v" 
+                    + u + ": " + dist.get(u) + " + weight: " + weight);
+                    dist.set(ver, dist.get(u) + weight);
+                    System.out.println("\t\tSet distance of v" + ver + " to " + (dist.get(u) + weight));
+                    pq.add(new Pair<>(dist.get(ver), ver));
+                    System.out.println("\t\tAdd (" + dist.get(ver) + ", v" + ver + ") to priority queue");
+                    System.out.println("Updated distances:");
+                    System.out.println("Vertex \t\t Distance from Source");
+                    for (Integer vertex : dist) {
+                        if (vertex == INF) {
+                            System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
+                        } else {
+                            System.out.println("v" + dist.indexOf(vertex) + " \t\t\t " + vertex);
+                        }
+                    }
                 }
             }
         }
+        System.out.println("\nPriority queue empty");
+    }
+}
+class Pair<T, U> {
+    private T first;
+    private U second;
+
+    public Pair(T first, U second) {
+        this.first = first;
+        this.second = second;
     }
 
-    class Pair<T, U> {
-        private T first;
+    public T getFirst() {
+        return this.first;
+    }
+    public U getSecond() {
+        return this.second;
     }
 }
