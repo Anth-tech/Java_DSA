@@ -14,7 +14,7 @@ public class Dijkstra {
             { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
             { 0, 0, 2, 0, 0, 0, 6, 7, 0 } 
         };
-        int path[] = alShortestPath(graph, 0, graph.length);
+        alShortestPath(graph, 0, graph.length);
 
         int numV = 9;
         List<List<Pair<Integer, Integer> > > adj = new ArrayList<>(numV);
@@ -38,25 +38,7 @@ public class Dijkstra {
         hShortestPath(adj, numV, 0);
     }
 
-    private static int minDistance(int dist[], Boolean sptSet[], int v) {
-        // init min value
-        int min = Integer.MAX_VALUE, min_index = -1;
-        System.out.println("\t initializing min value to ∞");
-
-        for (int i = 0; i < v; i++) {
-            if (sptSet[i] == false && dist[i] <= min) {
-                System.out.println("\t v" + i + " not yet visited, distance of v" + i 
-                + ": " + dist[i] + " is <= current min: " + (min == Integer.MAX_VALUE ? "∞" : min));
-                min = dist[i];
-                System.out.println("\t update min = " + dist[i]);
-                min_index = i;
-                System.out.println("\t update min index = " + i);
-            }
-        }
-        return min_index;
-    }
-
-    private static int[] alShortestPath(int graph[][], int src, int v) {
+    private static void alShortestPath(int graph[][], int src, int v) {
         System.out.println("Shortest path using adjacency matrix");
         // output array
         // dist[i] will hold the shortest distance from src to i
@@ -121,7 +103,24 @@ public class Dijkstra {
             System.out.println("Current distance values: ");
             printSolution(dist, v);
         }
-        return dist;
+    }
+
+    private static int minDistance(int dist[], Boolean sptSet[], int v) {
+        // init min value
+        int min = Integer.MAX_VALUE, min_index = -1;
+        System.out.println("\t initializing min value to ∞");
+
+        for (int i = 0; i < v; i++) {
+            if (sptSet[i] == false && dist[i] <= min) {
+                System.out.println("\t v" + i + " not yet visited, distance of v" + i 
+                + ": " + dist[i] + " is <= current min: " + (min == Integer.MAX_VALUE ? "∞" : min));
+                min = dist[i];
+                System.out.println("\t update min = " + dist[i]);
+                min_index = i;
+                System.out.println("\t update min index = " + i);
+            }
+        }
+        return min_index;
     }
 
     private static void printSolution(int dist[], int v) {
@@ -134,12 +133,7 @@ public class Dijkstra {
             }
         }
     }
-
-    private static void addEdge(List<List<Pair<Integer, Integer> > > adj, int u, int v, int wt) {
-        adj.get(u).add(new Pair<>(v, wt));
-        adj.get(v).add(new Pair<>(u, wt));
-    }
-
+    
     private static void hShortestPath(List<List<Pair<Integer, Integer> > > adj, int v, int src) {
         System.out.println("\nShortest path using a heap");
         
@@ -150,7 +144,6 @@ public class Dijkstra {
         // create a list for distances and initialize all distances as infinite (INF)
         System.out.println("Creating a list for distances and init");
         List<Integer> dist = new ArrayList<>(Collections.nCopies(v, INF));
-        System.out.println("Vertex \t\t Distance from Source");
         for (Integer vertex : dist) {
             System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
         }
@@ -160,14 +153,7 @@ public class Dijkstra {
         pq.add(new Pair<>(0, src));
         dist.set(src, 0);
         System.out.println("Priority queue: [ (" + pq.peek().getFirst() + ", " + pq.peek().getSecond() + ") ]");
-        System.out.println("Vertex \t\t Distance from Source");
-        for (Integer vertex : dist) {
-            if (vertex == INF) {
-                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
-            } else {
-                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t " + vertex);
-            }
-        }
+        printList(dist);
 
         // looping till priority queue becomes empty (or all distances are not finalized)
         System.out.println("\nLoop over priority queue until it is empty");
@@ -195,19 +181,30 @@ public class Dijkstra {
                     pq.add(new Pair<>(dist.get(ver), ver));
                     System.out.println("\t\tAdd (" + dist.get(ver) + ", v" + ver + ") to priority queue");
                     System.out.println("Updated distances:");
-                    System.out.println("Vertex \t\t Distance from Source");
-                    for (Integer vertex : dist) {
-                        if (vertex == INF) {
-                            System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
-                        } else {
-                            System.out.println("v" + dist.indexOf(vertex) + " \t\t\t " + vertex);
-                        }
-                    }
+                    printList(dist);
                 }
             }
         }
         System.out.println("\nPriority queue empty");
     }
+
+    private static void printList(List<Integer> dist) {
+        System.out.println("Vertex \t\t Distance from Source");
+        for (Integer vertex : dist) {
+            if (vertex == INF) {
+                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t ∞");
+            } else {
+                System.out.println("v" + dist.indexOf(vertex) + " \t\t\t " + vertex);
+            }
+        }
+    }
+
+    private static void addEdge(List<List<Pair<Integer, Integer> > > adj, int u, int v, int wt) {
+        adj.get(u).add(new Pair<>(v, wt));
+        adj.get(v).add(new Pair<>(u, wt));
+    }
+
+    
 }
 class Pair<T, U> {
     private T first;
