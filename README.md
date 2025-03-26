@@ -1,6 +1,6 @@
-# Java_DSA
+# Java DSA
 
-# Algorithm Implementations
+Algorithm Implementations
 
 ## Greedy Algorithms
 
@@ -71,6 +71,22 @@ Merge Sort is a divide-and-conquer sorting algorithm that recursively divides th
 
 #### Time Complexity
 - **O(N log N)** in all cases.
+
+---
+
+### Quick Sort
+
+#### Definition
+Quick Sort is a divide-and-conquer sorting algorithm that picks a pivot element, partitions the array around the pivot, and recursively sorts the subarrays.
+
+#### Explanation
+1. **Choose a pivot**: Typically, the last element, the first element, or a random element.
+2. **Partition the array**: Rearrange elements so that those smaller than the pivot go to the left and those larger go to the right.
+3. **Recursively apply quicksort**: Apply the same logic to the left and right subarrays.
+
+#### Time Complexity
+- **O(N log N)** on average.
+- **O(N²)** in the worst case (when the pivot selection is poor).
 
 ---
 
