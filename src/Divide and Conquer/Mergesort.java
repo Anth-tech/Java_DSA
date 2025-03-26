@@ -19,7 +19,7 @@ public class Mergesort {
 
         // copy data
         for (int i = 0; i < n1; ++i) {
-            L[i] = arr[1 + i];
+            L[i] = arr[l + i];
         }
         System.out.print("\nCreating temp array L: ");
         printArray(arr, l, r);
@@ -42,7 +42,6 @@ public class Mergesort {
                 System.out.println(L[i] + " <= " + R[j]);
                 arr[k] = L[i];
                 System.out.println("Putting " + L[i] + " in original array at index " + k);
-                printArray(arr, l, r);
                 i++;
             } else {
                 System.out.println(L[i] + " > " + R[j]);
@@ -70,7 +69,7 @@ public class Mergesort {
         }
 
         System.out.println("Array after merging: ");
-        printArray(arr, l, r);
+        printArray(arr, 0, arr.length - 1);
     }
 
     // main function that sorts arr[L...r] using merge()
